@@ -1,0 +1,25 @@
+Based on article: http://mikehadlow.blogspot.nl/2006/07/playing-with-httpsys.html
+
+I've been having fun playing with HTTP.SYS and the HttpListener (NET 2.0) class
+in System.Net. HTTP.SYS is the new kernel mode http listener that replaces
+winsock in 2003 Server and XP SP2 and the HttpListener class is a nice managed
+interface for the HTTP.SYS API. It's really easy to write your own web server
+and do cool things like URL mangling. Basically you just create a new instance
+of HttpListener and then tell it to hand you any requests that match the urls
+you give it. It's easy to imgaine writing a RESTfull service (see my previous
+post on this) using HttpListener. You could just write a windows service to
+receive any requests, say 'http://mikehadlow.com/restapp/' and then parse the
+local address part of the url to tell you which object to get from your
+database. So, say we got the url 'http://mikehadlow.com/restapp/customer/1234',
+we'd parse the local address 'restapp/customer/1234', grap 'customer' and
+'1234' and go to our database and 'select * from customer where id = 1234',
+serialise our customer object as xml and return that xml in the response.
+You can also host the ASP.NET pipeline in your own application using
+HttpListener. There's a really good MSDN article on this here. This means you
+no longer have to worry about having IIS installed on a machine to make your
+application response to http requests, any app can do it including windows
+forms apps, console apps and windows services. Here's some code for a little
+console app, showing how you use HttpListener. It's just a slight re-working
+of the example code from the help file. Just start up the app and browse to
+'http://localhost:1234/something/else/here?somekey=somevalue&someotherkey=someothervalue'
+and you'll see it echo back the local address and the query string parameters. 
